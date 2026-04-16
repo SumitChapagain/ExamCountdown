@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEB Class 12 Exam Countdown</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="topbar">
+        <h1 class="brand">NEB CLASS 12 BOARD EXAM</h1>
+        <div class="topbar-actions">
+          <button id="notify-btn" class="btn primary">Reminder</button>
+          <button id="theme-btn" class="btn secondary">Theme</button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <p class="coming-text">EXAM COUNTDOWN</p>
+        <h2 id="next-subject">Loading...</h2>
+        <p id="next-datetime" class="hero-subtext"></p>
+
+        <div class="countdown" id="countdown">
+          <div class="time-unit">
+            <div class="time-box" data-unit="days">
+              <div class="digit top">00</div>
+              <div class="digit bottom">00</div>
+              <div class="digit flip-top">00</div>
+              <div class="digit flip-bottom">00</div>
+            </div>
+            <small>Days</small>
+          </div>
+          <div class="time-unit">
+            <div class="time-box" data-unit="hours">
+              <div class="digit top">00</div>
+              <div class="digit bottom">00</div>
+              <div class="digit flip-top">00</div>
+              <div class="digit flip-bottom">00</div>
+            </div>
+            <small>Hours</small>
+          </div>
+          <div class="time-unit">
+            <div class="time-box" data-unit="minutes">
+              <div class="digit top">00</div>
+              <div class="digit bottom">00</div>
+              <div class="digit flip-top">00</div>
+              <div class="digit flip-bottom">00</div>
+            </div>
+            <small>Minutes</small>
+          </div>
+          <div class="time-unit">
+            <div class="time-box" data-unit="seconds">
+              <div class="digit top">00</div>
+              <div class="digit bottom">00</div>
+              <div class="digit flip-top">00</div>
+              <div class="digit flip-bottom">00</div>
+            </div>
+            <small>Seconds</small>
+          </div>
+        </div>
+
+        <div class="nepali-info">
+          <p class="np-label">Nepali Date and Time</p>
+          <p id="nepal-date" class="np-date">लोड हुँदैछ...</p>
+          <p id="nepal-now" class="np-time">--:--:--</p>
+        </div>
+      </section>
+
+      <section class="routine-panel">
+        <label>Computer Engineering Routine</label>
+        <div id="routine-list" class="routine-list"></div>
+      </section>
+
+      <footer class="developer-footer">
+        <p>Developed with dedication by <span>Sumit Chapagain</span></p>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
