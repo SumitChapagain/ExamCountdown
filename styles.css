@@ -294,6 +294,169 @@ h2 {
   color: var(--muted);
 }
 
+.minecraft-panel {
+  border: 3px solid #2f4423;
+  border-radius: 10px;
+  padding: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, rgba(96, 68, 40, 0.24) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(96, 68, 40, 0.24) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(77, 52, 30, 0.28) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(77, 52, 30, 0.28) 75%),
+    #4a321d;
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  box-shadow: inset 0 0 0 3px #6c4a2b, 0 8px 0 #1d140d;
+}
+
+.minecraft-panel h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  color: #edffd5;
+  letter-spacing: 0.04em;
+  text-shadow: 1px 1px 0 #284018;
+  padding: 0.75rem 0.85rem;
+  background:
+    linear-gradient(45deg, rgba(129, 185, 84, 0.2) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(129, 185, 84, 0.2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(91, 149, 54, 0.28) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(91, 149, 54, 0.28) 75%),
+    #4f8e31;
+  background-size: 14px 14px;
+  border-bottom: 3px solid #345922;
+}
+
+.mc-sub {
+  margin: 0.55rem 0.85rem 0.75rem;
+  color: #d8c5a9;
+  font-size: 0.84rem;
+}
+
+.mc-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0 0.85rem;
+  background: rgba(53, 35, 20, 0.72);
+  border: 2px solid #6c4a2b;
+  border-radius: 8px;
+  padding: 0.65rem;
+}
+
+#player-name {
+  flex: 1;
+  min-width: 220px;
+  border: 2px solid #4c341f;
+  border-radius: 6px;
+  padding: 0.55rem 0.62rem;
+  background: #2c1c10;
+  color: #f0e2d1;
+  font-family: inherit;
+}
+
+#player-name::placeholder {
+  color: #b89f87;
+}
+
+.mc-btn {
+  border: 2px solid #3e5f29;
+  background: linear-gradient(180deg, #78b756 0%, #4f7d36 100%);
+  color: #edfadb;
+  border-radius: 6px;
+  padding: 0.55rem 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mc-btn:hover {
+  filter: brightness(1.06);
+}
+
+.players-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.55rem;
+  margin: 0.8rem 0.85rem 0.9rem;
+}
+
+.player-tag {
+  border: 2px solid #4d6f36;
+  border-radius: 6px;
+  background: #1d2e14;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.83rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.player-main {
+  color: #d8f7b8;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.player-avatar {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #35511f;
+  border-radius: 4px;
+  flex: 0 0 22px;
+  background:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    url("./images/steve.jpg");
+  background-size: 8px 8px, 8px 8px, cover;
+  background-position: 0 0, 0 4px, center;
+  image-rendering: pixelated;
+}
+
+.player-main span {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  /* word-break: break-word; */
+}
+
+.player-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.player-action {
+  border: 1px solid #466930;
+  background: #2a4520;
+  color: #dff6c6;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.35rem;
+  cursor: pointer;
+}
+
+.player-action.delete {
+  background: #593028;
+  border-color: #8a4d41;
+  color: #ffd1c6;
+}
+
+.player-action:hover {
+  filter: brightness(1.08);
+}
+
+.players-empty {
+  color: #9ab57c;
+  font-size: 0.83rem;
+}
+
 .developer-footer {
   margin-top: 0.2rem;
   padding: 0.85rem 0.9rem;
@@ -345,5 +508,9 @@ h2 {
 
   .developer-footer {
     font-size: 0.8rem;
+  }
+
+  #player-name {
+    min-width: 100%;
   }
 }

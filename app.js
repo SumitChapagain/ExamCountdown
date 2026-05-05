@@ -23,6 +23,9 @@ const nextDateTime = $("next-datetime");
 const themeBtn = $("theme-btn");
 const notifyBtn = $("notify-btn");
 const routineList = $("routine-list");
+const playerNameInput = $("player-name");
+const addPlayerBtn = $("add-player-btn");
+const playersList = $("players-list");
 
 const flipUnits = {
   days: document.querySelector('.time-box[data-unit="days"]'),
@@ -180,6 +183,77 @@ function renderRoutineList() {
     .join("");
 }
 
+function getStoredPlayers() {
+  try {
+    const raw = localStorage.getItem("mcPlayers");
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function savePlayers(players) {
+  localStorage.setItem("mcPlayers", JSON.stringify(players));
+}
+
+function renderPlayers() {
+  const players = getStoredPlayers();
+  if (!players.length) {
+    playersList.innerHTML = `<p class="players-empty">No players yet. Add your first player.</p>`;
+    return;
+  }
+  playersList.innerHTML = players
+    .map(
+      (name, index) => `<div class="player-tag">
+        <div class="player-main">
+          <div class="player-avatar" aria-hidden="true"></div>
+          <span>${name}</span>
+        </div>
+        <div class="player-actions">
+          <button class="player-action rename" type="button" data-index="${index}">Rename</button>
+          <button class="player-action delete" type="button" data-index="${index}">Delete</button>
+        </div>
+      </div>`
+    )
+    .join("");
+}
+
+function addPlayer() {
+  const name = playerNameInput.value.trim();
+  if (!name) return;
+  const players = getStoredPlayers();
+  if (players.some((player) => player.toLowerCase() === name.toLowerCase())) {
+    playerNameInput.value = "";
+    return;
+  }
+  players.push(name);
+  savePlayers(players);
+  playerNameInput.value = "";
+  renderPlayers();
+}
+
+function deletePlayer(index) {
+  const players = getStoredPlayers();
+  players.splice(index, 1);
+  savePlayers(players);
+  renderPlayers();
+}
+
+function renamePlayer(index) {
+  const players = getStoredPlayers();
+  const current = players[index];
+  if (!current) return;
+  const renamed = window.prompt("Rename player", current);
+  if (!renamed) return;
+  const clean = renamed.trim();
+  if (!clean) return;
+  if (players.some((name, i) => i !== index && name.toLowerCase() === clean.toLowerCase())) return;
+  players[index] = clean;
+  savePlayers(players);
+  renderPlayers();
+}
+
 async function enableNotifications() {
   if (!("Notification" in window)) {
     notifyBtn.textContent = "Notifications unavailable";
@@ -220,6 +294,21 @@ themeBtn.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
 });
 notifyBtn.addEventListener("click", enableNotifications);
+addPlayerBtn.addEventListener("click", addPlayer);
+playerNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") addPlayer();
+});
+playersList.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+  const index = Number(target.dataset.index);
+  if (!Number.isInteger(index)) return;
+  if (target.classList.contains("delete")) {
+    deletePlayer(index);
+  } else if (target.classList.contains("rename")) {
+    renamePlayer(index);
+  }
+});
 
 applyTheme(localStorage.getItem("theme") || "dark");
 if (localStorage.getItem("notifyEnabled") === "1") {
@@ -233,6 +322,7 @@ function tick() {
 }
 
 renderRoutineList();
+renderPlayers();
 tick();
 setInterval(tick, 1000);
 setInterval(renderRoutineList, 10000);
