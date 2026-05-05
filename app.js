@@ -1,3 +1,20 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCJjXyp99J3wq4ErTSKiNicb6UMmOj8DV8",
+  authDomain: "countdown-f29bb.firebaseapp.com",
+  databaseURL: "https://countdown-f29bb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "countdown-f29bb",
+  storageBucket: "countdown-f29bb.firebasestorage.app",
+  messagingSenderId: "530287096711",
+  appId: "1:530287096711:web:b9a703e9b79f9dfe041922"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const playersRef = ref(db, 'players');
+
 const EXAM_TIME = { startHour: 8, endHour: 11 };
 const NEPAL_TZ = "Asia/Kathmandu";
 
@@ -185,30 +202,18 @@ function renderRoutineList() {
 
 let currentPlayers = [];
 
-async function fetchPlayers() {
-  try {
-    const res = await fetch('/api/players');
-    if (res.ok) {
-      currentPlayers = await res.json();
-      renderPlayers();
-    }
-  } catch (error) {
-    console.error("Failed to fetch players", error);
-  }
-}
+// Listen to real-time updates from Firebase
+onValue(playersRef, (snapshot) => {
+  const data = snapshot.val();
+  currentPlayers = Array.isArray(data) ? data : [];
+  renderPlayers();
+});
 
-async function savePlayers(players) {
-  currentPlayers = players;
-  renderPlayers(); // Optimistic update
-  try {
-    await fetch('/api/players', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(players)
-    });
-  } catch (error) {
-    console.error("Failed to save players", error);
-  }
+function savePlayers(players) {
+  // Save directly to Firebase; onValue will trigger a re-render
+  set(playersRef, players).catch((error) => {
+    console.error("Failed to save players to Firebase", error);
+  });
 }
 
 function renderPlayers() {
@@ -337,8 +342,6 @@ function tick() {
 }
 
 renderRoutineList();
-fetchPlayers();
 tick();
 setInterval(tick, 1000);
 setInterval(renderRoutineList, 10000);
-setInterval(fetchPlayers, 5000); // Poll for player updates every 5 seconds
