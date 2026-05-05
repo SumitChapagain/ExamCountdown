@@ -183,22 +183,36 @@ function renderRoutineList() {
     .join("");
 }
 
-function getStoredPlayers() {
+let currentPlayers = [];
+
+async function fetchPlayers() {
   try {
-    const raw = localStorage.getItem("mcPlayers");
-    const list = raw ? JSON.parse(raw) : [];
-    return Array.isArray(list) ? list : [];
+    const res = await fetch('/api/players');
+    if (res.ok) {
+      currentPlayers = await res.json();
+      renderPlayers();
+    }
   } catch (error) {
-    return [];
+    console.error("Failed to fetch players", error);
   }
 }
 
-function savePlayers(players) {
-  localStorage.setItem("mcPlayers", JSON.stringify(players));
+async function savePlayers(players) {
+  currentPlayers = players;
+  renderPlayers(); // Optimistic update
+  try {
+    await fetch('/api/players', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(players)
+    });
+  } catch (error) {
+    console.error("Failed to save players", error);
+  }
 }
 
 function renderPlayers() {
-  const players = getStoredPlayers();
+  const players = currentPlayers;
   if (!players.length) {
     playersList.innerHTML = `<p class="players-empty">No players yet. Add your first player.</p>`;
     return;
@@ -211,8 +225,12 @@ function renderPlayers() {
           <span>${name}</span>
         </div>
         <div class="player-actions">
-          <button class="player-action rename" type="button" data-index="${index}">Rename</button>
-          <button class="player-action delete" type="button" data-index="${index}">Delete</button>
+          <button class="player-action rename" type="button" data-index="${index}" aria-label="Rename">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
+          </button>
+          <button class="player-action delete" type="button" data-index="${index}" aria-label="Delete">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </button>
         </div>
       </div>`
     )
@@ -222,7 +240,7 @@ function renderPlayers() {
 function addPlayer() {
   const name = playerNameInput.value.trim();
   if (!name) return;
-  const players = getStoredPlayers();
+  const players = [...currentPlayers];
   if (players.some((player) => player.toLowerCase() === name.toLowerCase())) {
     playerNameInput.value = "";
     return;
@@ -230,18 +248,16 @@ function addPlayer() {
   players.push(name);
   savePlayers(players);
   playerNameInput.value = "";
-  renderPlayers();
 }
 
 function deletePlayer(index) {
-  const players = getStoredPlayers();
+  const players = [...currentPlayers];
   players.splice(index, 1);
   savePlayers(players);
-  renderPlayers();
 }
 
 function renamePlayer(index) {
-  const players = getStoredPlayers();
+  const players = [...currentPlayers];
   const current = players[index];
   if (!current) return;
   const renamed = window.prompt("Rename player", current);
@@ -251,7 +267,6 @@ function renamePlayer(index) {
   if (players.some((name, i) => i !== index && name.toLowerCase() === clean.toLowerCase())) return;
   players[index] = clean;
   savePlayers(players);
-  renderPlayers();
 }
 
 async function enableNotifications() {
@@ -322,7 +337,8 @@ function tick() {
 }
 
 renderRoutineList();
-renderPlayers();
+fetchPlayers();
 tick();
 setInterval(tick, 1000);
 setInterval(renderRoutineList, 10000);
+setInterval(fetchPlayers, 5000); // Poll for player updates every 5 seconds

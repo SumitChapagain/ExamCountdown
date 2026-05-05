@@ -436,10 +436,11 @@ h2 {
   background: #2a4520;
   color: #dff6c6;
   border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.2rem 0.35rem;
+  padding: 0.3rem 0.35rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .player-action.delete {
